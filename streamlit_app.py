@@ -32,33 +32,8 @@ def run_query(query):
 # Streamlit UI
 st.title("Retail Order Dashboard")
 
-# Query selection
-query_options = [
-    "Top 10 highest revenue generating products",
-    "Top 5 cities with the highest profit margins",
-    "Total discount given for each category",
-    "Average sales price per product category",
-    "The highest average sale price",
-    "Total profit per category",
-    "Top 3 segments with the highest quantity of orders",
-    "Average discount percentage given per region",
-    "Product category with the highest total profit",
-    "Total revenue generated per year",
-    "Total revenue per product category",
-    "Top 5 products by profit",
-    "Average sales price per sub category",
-    "Total discount amount given by category",
-    "Total orders per segment",
-    "Profit margin per city",
-    "Average profit per category",
-    "Top 3 cities by revenue",
-    "Products with no profit",
-    "Top 10 countries with high sales by segment"
-]
-selected_query = st.selectbox("Select a query to visualize:", query_options)
-
-# Dictionary to hold queries
-queries = {
+# Split queries into two sections
+queries_by_guvi = {
     "Top 10 highest revenue generating products": 
         'SELECT "product id", SUM("list price" * "quantity") AS total_revenue FROM df1_orders GROUP BY "product id" ORDER BY total_revenue DESC LIMIT 10;',
     "Top 5 cities with the highest profit margins": 
@@ -79,6 +54,9 @@ queries = {
         'SELECT "category", SUM("profit") AS highest_total_profit FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY highest_total_profit DESC LIMIT 1;',
     "Total revenue generated per year": 
         'SELECT "year", SUM("sales price" * "quantity") AS total_revenue FROM df1_orders GROUP BY "year" ORDER BY "year";',
+}
+
+my_own_queries = {
     "Total revenue per product category": 
         'SELECT "category", SUM("sales price" * "quantity") AS total_revenue FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY total_revenue DESC;',
     "Top 5 products by profit": 
@@ -97,22 +75,36 @@ queries = {
         'SELECT o."city", SUM(d."list price" * d."quantity") AS revenue FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."city" ORDER BY revenue DESC LIMIT 3;',
     "Products with no profit": 
         'SELECT "product id" FROM df1_orders GROUP BY "product id" HAVING SUM("profit") = 0;',
-    "Top 10 countries with high sales by segment": 
-        'SELECT "country", "segment", SUM("sales price") AS high_sales FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."country", o."segment" ORDER BY high_sales DESC LIMIT 10;'
+    "Top 3 countries with high sales by segment": 
+        'SELECT "country", "segment", SUM("sales price") AS high_sales FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."country", o."segment" ORDER BY high_sales DESC LIMIT 3;'
 }
-  
 
-# Execute selected query
-if selected_query:
-    query = queries[selected_query]
-    data = run_query(query)
-    if data is not None and not data.empty:
-        st.dataframe(data)  # Display the data
+# Navigation options
+nav = st.radio("Select Query Section", ["Queries by GUVI", "My Own Queries"])
+
+# Query selection based on navigation
+if nav == "Queries by GUVI":
+    st.subheader("Queries by GUVI")
+    query = st.selectbox("Select a query to visualize:", list(queries_by_guvi.keys()))
+    selected_query_set = queries_by_guvi
+elif nav == "My Own Queries":
+    st.subheader("My Own Queries")
+    query = st.selectbox("Select a query to visualize:", list(my_own_queries.keys()))
+    selected_query_set = my_own_queries
+else:
+    query = None
+
+# Execute and visualize selected query
+if query:
+    result_df = run_query(selected_query_set[query])
+    if result_df is not None:
+        st.dataframe(result_df)
+
 
 # Execute and visualize based on selected query
        
-    if selected_query == "Top 10 highest revenue generating products":
-        result_df = run_query(queries[selected_query])
+    if query == "Top 10 highest revenue generating products":
+        result_df = run_query(queries_by_guvi[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["product id"], result_df["total_revenue"], color='skyblue')
@@ -122,8 +114,8 @@ if selected_query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query == "Top 5 cities with the highest profit margins":
-        result_df = run_query(queries[selected_query])
+    elif query == "Top 5 cities with the highest profit margins":
+        result_df = run_query(queries_by_guvi[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["city"], result_df["total_profit"], color='lightgreen')
@@ -133,8 +125,8 @@ if selected_query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query == "Total discount given for each category":
-        result_df = run_query(queries[selected_query])
+    elif query == "Total discount given for each category":
+        result_df = run_query(queries_by_guvi[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["category"], result_df["total_discount"], color='orange')
@@ -144,8 +136,8 @@ if selected_query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query == "Average sales price per product category":
-        result_df = run_query(queries[selected_query])
+    elif query == "Average sales price per product category":
+        result_df = run_query(queries_by_guvi[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["category"], result_df["average_sales_price"], color='purple')
@@ -155,19 +147,19 @@ if selected_query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query== "Total profit per category":
-        result_df = run_query(queries[selected_query])
+    elif query== "Total profit per category":
+        result_df = run_query(queries_by_guvi[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
-            plt.bar(result_df["category"], result_df["total_profit"], color='cyan')
+            plt.bar(result_df["category"], result_df["total_profit"], color='violet')
             plt.title("Total Profit Per Category")
             plt.xlabel("Category")
             plt.ylabel("Total Profit")
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query == "Top 3 segments with the highest quantity of orders":
-        result_df = run_query(queries[selected_query])
+    elif query == "Top 3 segments with the highest quantity of orders":
+        result_df = run_query(queries_by_guvi[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["category"], result_df["highest_quantity"], color='magenta')
@@ -177,8 +169,8 @@ if selected_query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query == "Average discount percentage given per region":
-        result_df = run_query(queries[selected_query])
+    elif query == "Average discount percentage given per region":
+        result_df = run_query(queries_by_guvi[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["region"], result_df["avg_discount_percent"], color='salmon')
@@ -188,8 +180,8 @@ if selected_query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query == "Product category with the highest total profit":
-        result_df = run_query(queries[selected_query])
+    elif query == "Product category with the highest total profit":
+        result_df = run_query(queries_by_guvi[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["category"], result_df["highest_total_profit"], color='orange')
@@ -199,8 +191,8 @@ if selected_query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query == "Total revenue generated per year":
-        result_df = run_query(queries[selected_query])
+    elif query == "Total revenue generated per year":
+        result_df = run_query(queries_by_guvi[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.plot(result_df["year"], result_df["total_revenue"], marker='o', color='blue')
@@ -209,8 +201,8 @@ if selected_query:
             plt.ylabel("Total Revenue")
             st.pyplot(plt)
 
-    elif selected_query == "Total revenue per product category":
-        result_df = run_query(queries[selected_query])
+    elif query == "Total revenue per product category":
+        result_df = run_query(my_own_queries[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["category"], result_df["total_revenue"], color='lightblue')
@@ -220,8 +212,8 @@ if selected_query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query == "Top 5 products by profit":
-        result_df = run_query(queries[selected_query])
+    elif query == "Top 5 products by profit":
+        result_df = run_query(my_own_queries[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["sub category"], result_df["products_by_profit"], color='gold')
@@ -231,8 +223,8 @@ if selected_query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query == "Average sales price per sub category":
-        result_df = run_query(queries[selected_query])
+    elif query == "Average sales price per sub category":
+        result_df = run_query(my_own_queries[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["sub category"], result_df["avg_sales_price"], color='pink')
@@ -242,8 +234,8 @@ if selected_query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query == "Total discount amount given by category":
-        result_df = run_query(queries[selected_query])
+    elif query == "Total discount amount given by category":
+        result_df = run_query(my_own_queries[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["category"], result_df["total_discount_amount"], color='lightcoral')
@@ -253,24 +245,24 @@ if selected_query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query == "Total orders per segment":
-        result_df = run_query(queries[selected_query])
+    elif query == "Total orders per segment":
+        result_df = run_query(my_own_queries[query])
         if result_df is not None:
             st.write(f"Total Orders: {result_df['total_orders'][0]}")
 
-    elif selected_query == "Profit margin per city":
-        result_df = run_query(queries[selected_query])
+    elif query == "Profit margin per city":
+        result_df = run_query(my_own_queries[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["city"], result_df["total_profit"], color='lightseagreen')
             plt.title("Profit Margin Per City")
             plt.xlabel("City")
             plt.ylabel("Total Profit")
-            plt.xticks(rotation=45)
+            plt.xticks(rotation=90)
             st.pyplot(plt)
 
-    elif selected_query == "Average profit per category":
-        result_df = run_query(queries[selected_query])
+    elif query == "Average profit per category":
+        result_df = run_query(my_own_queries[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["category"], result_df["average_profit"], color='lightgray')
@@ -280,8 +272,8 @@ if selected_query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query == "Top 3 cities by revenue":
-        result_df = run_query(queries[selected_query])
+    elif query == "Top 3 cities by revenue":
+        result_df = run_query(my_own_queries[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["city"], result_df["revenue"], color='purple')
@@ -291,29 +283,27 @@ if selected_query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif selected_query == "Products with no profit":
-        result_df = run_query(queries[selected_query])
+    elif query == "Products with no profit":
+        result_df = run_query(my_own_queries[query])
         if result_df is not None and not result_df.empty:
             st.write("Products with No Profit:")
             st.write(result_df)
         else:
             st.write("All products are generating profit.")
 
-    elif selected_query == "Top 10 countries with high sales by segment":
-        result_df = run_query(queries[selected_query])
+    elif query == "Top 3 countries with high sales by segment":
+        result_df = run_query(my_own_queries[query])
         if result_df is not None:
             plt.figure(figsize=(10, 6))
             plt.bar(result_df["country"], result_df["high_sales"], color='orange')
-            plt.title("Top 10 Countries with High Sales by Segment")
+            plt.title("Top 3 Countries with High Sales by Segment")
             plt.xlabel("Country")
             plt.ylabel("High Sales")
             plt.xticks(rotation=45)
             st.pyplot(plt)
     else:
         st.warning("No data available for this query.")
-
+else:
+    st.warning("Please select a query.")        
 
 st.text("Thank you for using the dashboard!")
-
-
-
