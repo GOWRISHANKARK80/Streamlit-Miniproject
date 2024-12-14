@@ -1,4 +1,4 @@
-Check on Streamlit Dashboard (Retail Order): https://app-miniproject-hry2sk9pby2zjb5rmxtq2u.streamlit.app/
+Check on Streamlit Dashboard (Retail Order): https://retailorder-miniproject-txshqwajyknydmqgphlbdh.streamlit.app/
 
 Included --> [#PostgreSQL Queries #Data Visualization #Data Analysis]
                
