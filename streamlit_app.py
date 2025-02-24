@@ -7,11 +7,11 @@ import plotly.express as px
 # Function to connect to the PostgreSQL database
 def get_db_connection():
     conn = psycopg2.connect(
-        host="gsdatabase.czuk0sy0qrp0.ap-south-1.rds.amazonaws.com",
+        host="gowridb.cp8imqo0okli.ap-south-1.rds.amazonaws.com",
         port=5432,
-        database="retail_order",
+        database="postgres",
         user="postgres",
-        password="apple123"
+        password="rootroot80"
     )
     return conn
 
