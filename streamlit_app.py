@@ -317,7 +317,6 @@ if query:
         result_df = run_query(my_own_queries[query])
         if result_df is not None and not result_df.empty:
             st.write("These are the products that have no profit:")
-            st.write(result_df)
         else:
             st.write("All products are generating profit.")            
     
