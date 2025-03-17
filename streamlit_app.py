@@ -61,8 +61,8 @@ if nav == "queries_by_guvi":
         "Total revenue generated per year": 
             'SELECT "year", SUM("sales price" * "quantity") AS total_revenue FROM df1_orders GROUP BY "year" ORDER BY "year";',
     }
-elif nav == "My Own Queries":
-    st.subheader("my_own_queries")
+elif nav == "my_own_queries":
+    st.subheader("My Own Queries")
     query = st.selectbox("Select a query to visualize:", list(my_own_queries.keys()))
     selected_query_set = my_own_queries
     my_own_queries = {
