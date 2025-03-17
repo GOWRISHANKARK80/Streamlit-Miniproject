@@ -31,6 +31,10 @@ def run_query(query):
 
 # Streamlit UI
 st.title("Retail Order Dashboard")
+# Input fields for user
+nav = st.sidebar.radio("Select Queries", ["queries_by_guvi", "my_own_queries"])
+if nav == "queries_by_guvi":
+    st.header("Queries by Guvi")
 
 # Split queries into two sections
 queries_by_guvi = {
