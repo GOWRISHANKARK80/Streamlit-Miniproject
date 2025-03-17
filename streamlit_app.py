@@ -313,13 +313,7 @@ if query:
             plt.xticks(rotation=45)
             st.pyplot(plt)
 
-    elif query == "Products with no profit":
-        result_df = run_query(my_own_queries[query])
-        if result_df is not None and not result_df.empty:
-            st.write("Products with No Profit:")
-            st.write(result_df)
-        else:
-            st.write("All products are generating profit.")
+
 
     elif query == "Top 3 countries with high sales by segment":
         result_df = run_query(my_own_queries[query])
