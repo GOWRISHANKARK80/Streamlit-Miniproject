@@ -103,7 +103,7 @@ my_own_queries = {
         "Total orders per segment": 
             'SELECT COUNT(DISTINCT "order id") AS total_orders FROM df1_order;',
         "Profit margin per city": 
-            'SELECT o."city", SUM(d."profit") AS total_profit FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."city" ORDER BY total_profit DESC;',
+            'SELECT o."city", SUM(d."profit") AS total_profit FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."city" ORDER BY total_profit DESC LIMIT 10;',
         "Average profit per category": 
             'SELECT "category", AVG("profit") AS average_profit FROM df1_orders d JOIN df1_order o ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY average_profit DESC;',
         "Top 3 cities by revenue": 
