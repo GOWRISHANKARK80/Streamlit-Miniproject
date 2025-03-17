@@ -288,7 +288,7 @@ if query:
             plt.title("Profit Margin Per City")
             plt.xlabel("City")
             plt.ylabel("Total Profit")
-            plt.xticks(rotation=90)
+            plt.xticks(rotation=45)
             st.pyplot(plt)
 
     elif query == "Average profit per category":
