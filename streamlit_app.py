@@ -33,13 +33,9 @@ def run_query(query):
 st.title("Retail Order Dashboard")
 # Input fields for user
 nav = st.sidebar.radio("Select Queries", ["queries_by_guvi", "my_own_queries"])
-# Query selection based on navigation
-if nav == "queries_by_guvi":
-    st.subheader("Queries by GUVI")
-    query = st.selectbox("Select a query to visualize:", list(queries_by_guvi.keys()))
-    selected_query_set = queries_by_guvi
+
 # Split queries into two sections
-    queries_by_guvi = {
+queries_by_guvi = {
         "Top 10 highest revenue generating products": 
             'SELECT "product id", SUM("list price" * "quantity") AS total_revenue FROM df1_orders GROUP BY "product id" ORDER BY total_revenue DESC LIMIT 10;',
         "Top 5 cities with the highest profit margins": 
@@ -60,12 +56,9 @@ if nav == "queries_by_guvi":
             'SELECT "category", SUM("profit") AS highest_total_profit FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY highest_total_profit DESC LIMIT 1;',
         "Total revenue generated per year": 
             'SELECT "year", SUM("sales price" * "quantity") AS total_revenue FROM df1_orders GROUP BY "year" ORDER BY "year";',
-    }
-elif nav == "my_own_queries":
-    st.subheader("My Own Queries")
-    query = st.selectbox("Select a query to visualize:", list(my_own_queries.keys()))
-    selected_query_set = my_own_queries
-    my_own_queries = {
+}
+
+my_own_queries = {
         "Total revenue per product category": 
             'SELECT "category", SUM("sales price" * "quantity") AS total_revenue FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY total_revenue DESC;',
         "Top 5 products by profit": 
@@ -86,8 +79,15 @@ elif nav == "my_own_queries":
             'SELECT "product id" FROM df1_orders GROUP BY "product id" HAVING SUM("profit") = 0;',
         "Top 3 countries with high sales by segment": 
             'SELECT "country", "segment", SUM("sales price") AS high_sales FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."country", o."segment" ORDER BY high_sales DESC LIMIT 3;'
-    }
-
+}
+if nav == "queries_by_guvi":
+    st.subheader("Queries by GUVI")
+    query = st.selectbox("Select a query to visualize:", list(queries_by_guvi.keys()))
+    selected_query_set = queries_by_guvi
+elif nav == "my_own_queries":
+    st.subheader("My Own Queries")
+    query = st.selectbox("Select a query to visualize:", list(my_own_queries.keys()))
+    selected_query_set = my_own_queries
 else:
     query = None
 
