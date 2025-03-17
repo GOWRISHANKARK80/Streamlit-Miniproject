@@ -34,7 +34,7 @@ st.title("Retail Order Dashboard")
 # Input fields for user
 nav = st.sidebar.radio("Select Queries", ["queries_by_guvi", "my_own_queries"])
 # Query selection based on navigation
-if nav == "Queries by GUVI":
+if nav == "queries_by_guvi":
     st.subheader("Queries by GUVI")
     query = st.selectbox("Select a query to visualize:", list(queries_by_guvi.keys()))
     selected_query_set = queries_by_guvi
@@ -62,7 +62,7 @@ if nav == "Queries by GUVI":
             'SELECT "year", SUM("sales price" * "quantity") AS total_revenue FROM df1_orders GROUP BY "year" ORDER BY "year";',
     }
 elif nav == "My Own Queries":
-    st.subheader("My Own Queries")
+    st.subheader("my_own_queries")
     query = st.selectbox("Select a query to visualize:", list(my_own_queries.keys()))
     selected_query_set = my_own_queries
     my_own_queries = {
