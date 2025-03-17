@@ -65,7 +65,7 @@ set_background_image_local()
 # Streamlit UI
 st.title("Retail Order Dashboard")
 # Input fields for user
-nav = st.sidebar.radio("Select Queries", ["Queries_By_Guvi", "My_Own_Queries"])
+nav = st.sidebar.radio("Select Queries", ["queries_by_guvi", "my_own_queries"])
 
 # Split queries into two sections
 queries_by_guvi = {
