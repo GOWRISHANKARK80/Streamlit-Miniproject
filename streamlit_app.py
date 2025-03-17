@@ -34,31 +34,29 @@ st.title("Retail Order Dashboard")
 # Input fields for user
 nav = st.sidebar.radio("Select Queries", ["queries_by_guvi", "my_own_queries"])
 if nav == "queries_by_guvi":
-    st.header("Queries by Guvi")
-
 # Split queries into two sections
-queries_by_guvi = {
-    "Top 10 highest revenue generating products": 
-        'SELECT "product id", SUM("list price" * "quantity") AS total_revenue FROM df1_orders GROUP BY "product id" ORDER BY total_revenue DESC LIMIT 10;',
-    "Top 5 cities with the highest profit margins": 
-        'SELECT o."city", SUM(d."profit") AS total_profit FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."city" ORDER BY total_profit DESC LIMIT 5;',
-    "Total discount given for each category": 
-        'SELECT o."category", SUM(d."discount amount") AS total_discount FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY total_discount DESC;',
-    "Average sales price per product category": 
-        'SELECT "category", AVG("sales price") AS average_sales_price FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category";',
-    "The highest average sale price":
-        'SELECT "region",AVG("sales price") AS "average sales price" FROM df1_order o JOIN df1_orders d on o."sub category"=d."sub category" GROUP BY o."region",d."sales price" ORDER BY "average sales price" DESC;',
-    "Total profit per category": 
-        'SELECT "category", SUM("profit") AS total_profit FROM df1_orders d JOIN df1_order o ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY total_profit DESC;',
-    "Top 3 segments with the highest quantity of orders": 
-        'SELECT "category", "quantity" AS highest_quantity FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category", d."quantity" ORDER BY highest_quantity DESC LIMIT 3;',
-    "Average discount percentage given per region": 
-        'SELECT "region", AVG("discount percent") AS avg_discount_percent FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."region" ORDER BY avg_discount_percent DESC;',
-    "Product category with the highest total profit": 
-        'SELECT "category", SUM("profit") AS highest_total_profit FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY highest_total_profit DESC LIMIT 1;',
-    "Total revenue generated per year": 
-        'SELECT "year", SUM("sales price" * "quantity") AS total_revenue FROM df1_orders GROUP BY "year" ORDER BY "year";',
-}
+    queries_by_guvi = {
+        "Top 10 highest revenue generating products": 
+            'SELECT "product id", SUM("list price" * "quantity") AS total_revenue FROM df1_orders GROUP BY "product id" ORDER BY total_revenue DESC LIMIT 10;',
+        "Top 5 cities with the highest profit margins": 
+            'SELECT o."city", SUM(d."profit") AS total_profit FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."city" ORDER BY total_profit DESC LIMIT 5;',
+        "Total discount given for each category": 
+            'SELECT o."category", SUM(d."discount amount") AS total_discount FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY total_discount DESC;',
+        "Average sales price per product category": 
+            'SELECT "category", AVG("sales price") AS average_sales_price FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category";',
+        "The highest average sale price":
+            'SELECT "region",AVG("sales price") AS "average sales price" FROM df1_order o JOIN df1_orders d on o."sub category"=d."sub category" GROUP BY o."region",d."sales price" ORDER BY "average sales price" DESC;',
+        "Total profit per category": 
+            'SELECT "category", SUM("profit") AS total_profit FROM df1_orders d JOIN df1_order o ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY total_profit DESC;',
+        "Top 3 segments with the highest quantity of orders": 
+            'SELECT "category", "quantity" AS highest_quantity FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category", d."quantity" ORDER BY highest_quantity DESC LIMIT 3;',
+        "Average discount percentage given per region": 
+            'SELECT "region", AVG("discount percent") AS avg_discount_percent FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."region" ORDER BY avg_discount_percent DESC;',
+        "Product category with the highest total profit": 
+            'SELECT "category", SUM("profit") AS highest_total_profit FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY highest_total_profit DESC LIMIT 1;',
+        "Total revenue generated per year": 
+            'SELECT "year", SUM("sales price" * "quantity") AS total_revenue FROM df1_orders GROUP BY "year" ORDER BY "year";',
+    }
 
 my_own_queries = {
     "Total revenue per product category": 
