@@ -33,7 +33,11 @@ def run_query(query):
 st.title("Retail Order Dashboard")
 # Input fields for user
 nav = st.sidebar.radio("Select Queries", ["queries_by_guvi", "my_own_queries"])
-if nav == "queries_by_guvi":
+# Query selection based on navigation
+if nav == "Queries by GUVI":
+    st.subheader("Queries by GUVI")
+    query = st.selectbox("Select a query to visualize:", list(queries_by_guvi.keys()))
+    selected_query_set = queries_by_guvi
 # Split queries into two sections
     queries_by_guvi = {
         "Top 10 highest revenue generating products": 
@@ -57,42 +61,33 @@ if nav == "queries_by_guvi":
         "Total revenue generated per year": 
             'SELECT "year", SUM("sales price" * "quantity") AS total_revenue FROM df1_orders GROUP BY "year" ORDER BY "year";',
     }
-
-my_own_queries = {
-    "Total revenue per product category": 
-        'SELECT "category", SUM("sales price" * "quantity") AS total_revenue FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY total_revenue DESC;',
-    "Top 5 products by profit": 
-        'SELECT "category", o."sub category", SUM("profit") AS products_by_profit FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category", o."sub category" ORDER BY products_by_profit DESC LIMIT 5;',
-    "Average sales price per sub category": 
-        'SELECT d."sub category", AVG("sales price") AS avg_sales_price FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY d."sub category" ORDER BY d."sub category";',
-    "Total discount amount given by category": 
-        'SELECT "category", SUM("discount amount") AS total_discount_amount FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY total_discount_amount DESC;',
-    "Total orders per segment": 
-        'SELECT COUNT(DISTINCT "order id") AS total_orders FROM df1_order;',
-    "Profit margin per city": 
-        'SELECT o."city", SUM(d."profit") AS total_profit FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."city" ORDER BY total_profit DESC;',
-    "Average profit per category": 
-        'SELECT "category", AVG("profit") AS average_profit FROM df1_orders d JOIN df1_order o ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY average_profit DESC;',
-    "Top 3 cities by revenue": 
-        'SELECT o."city", SUM(d."list price" * d."quantity") AS revenue FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."city" ORDER BY revenue DESC LIMIT 3;',
-    "Products with no profit": 
-        'SELECT "product id" FROM df1_orders GROUP BY "product id" HAVING SUM("profit") = 0;',
-    "Top 3 countries with high sales by segment": 
-        'SELECT "country", "segment", SUM("sales price") AS high_sales FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."country", o."segment" ORDER BY high_sales DESC LIMIT 3;'
-}
-
-# Navigation options
-nav = st.radio("Select Query Section", ["Queries by GUVI", "My Own Queries"])
-
-# Query selection based on navigation
-if nav == "Queries by GUVI":
-    st.subheader("Queries by GUVI")
-    query = st.selectbox("Select a query to visualize:", list(queries_by_guvi.keys()))
-    selected_query_set = queries_by_guvi
 elif nav == "My Own Queries":
     st.subheader("My Own Queries")
     query = st.selectbox("Select a query to visualize:", list(my_own_queries.keys()))
     selected_query_set = my_own_queries
+    my_own_queries = {
+        "Total revenue per product category": 
+            'SELECT "category", SUM("sales price" * "quantity") AS total_revenue FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY total_revenue DESC;',
+        "Top 5 products by profit": 
+            'SELECT "category", o."sub category", SUM("profit") AS products_by_profit FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category", o."sub category" ORDER BY products_by_profit DESC LIMIT 5;',
+        "Average sales price per sub category": 
+            'SELECT d."sub category", AVG("sales price") AS avg_sales_price FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY d."sub category" ORDER BY d."sub category";',
+        "Total discount amount given by category": 
+            'SELECT "category", SUM("discount amount") AS total_discount_amount FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY total_discount_amount DESC;',
+        "Total orders per segment": 
+            'SELECT COUNT(DISTINCT "order id") AS total_orders FROM df1_order;',
+        "Profit margin per city": 
+            'SELECT o."city", SUM(d."profit") AS total_profit FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."city" ORDER BY total_profit DESC;',
+        "Average profit per category": 
+            'SELECT "category", AVG("profit") AS average_profit FROM df1_orders d JOIN df1_order o ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY average_profit DESC;',
+        "Top 3 cities by revenue": 
+            'SELECT o."city", SUM(d."list price" * d."quantity") AS revenue FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."city" ORDER BY revenue DESC LIMIT 3;',
+        "Products with no profit": 
+            'SELECT "product id" FROM df1_orders GROUP BY "product id" HAVING SUM("profit") = 0;',
+        "Top 3 countries with high sales by segment": 
+            'SELECT "country", "segment", SUM("sales price") AS high_sales FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."country", o."segment" ORDER BY high_sales DESC LIMIT 3;'
+    }
+
 else:
     query = None
 
