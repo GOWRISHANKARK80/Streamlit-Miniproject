@@ -108,7 +108,7 @@ my_own_queries = {
             'SELECT "category", AVG("profit") AS average_profit FROM df1_orders d JOIN df1_order o ON o."sub category" = d."sub category" GROUP BY o."category" ORDER BY average_profit DESC;',
         "Top 3 cities by revenue": 
             'SELECT o."city", SUM(d."list price" * d."quantity") AS revenue FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."city" ORDER BY revenue DESC LIMIT 3;',
-        "Top three Products with no profit": 
+        "Products with no profit": 
             'SELECT "product id" FROM df1_orders GROUP BY "product id" HAVING SUM("profit") = 0 LIMIT 3;',
         "Top 3 countries with high sales by segment": 
             'SELECT "country", "segment", SUM("sales price") AS high_sales FROM df1_order o JOIN df1_orders d ON o."sub category" = d."sub category" GROUP BY o."country", o."segment" ORDER BY high_sales DESC LIMIT 3;'
